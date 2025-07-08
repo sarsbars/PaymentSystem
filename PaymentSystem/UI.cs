@@ -8,10 +8,12 @@ namespace PaymentSystem {
         private static readonly List<string> ValidCommands = new List<string> { "1", "2", "3", "4", "5", "6" };
         private static readonly List<string> ValidCurrencies = new List<string> { "CAD", "USD", "EUR" };
         private string selectedCurrency;
+        private PaymentManager paymentManager;
 
         // Constructor
         public UI() {
             selectedCurrency = "CAD";
+            paymentManager = new PaymentManager();
         }
 
         // Methods
@@ -47,18 +49,22 @@ namespace PaymentSystem {
                         ChangeCurrency();
                         break;
                     case "2":
-                        Console.WriteLine("Credit Card Payment selected ");
+                        ProcessCreditCardPayment();
                         break;
                     case "3":
-                        Console.WriteLine("Bitcoin Payment selected ");
+                        ProcessBitcoinPayment();
                         break;
                     case "4":
-                        Console.WriteLine("Cash Payment selected");
+                        ProcessCashPayment();
                         break;
                     case "5":
-                        Console.WriteLine("Cheque Payment selected "); 
+                        ProcessChequePayment();
                         break;
                     case "6":
+                        paymentManager.ValidatePayments();
+                        paymentManager.AuthorizePayments();
+                        paymentManager.RecordOffline();
+                        paymentManager.ProcessPayments();
                         Console.WriteLine("Exiting program.");
                         return;
                 }
@@ -82,6 +88,86 @@ namespace PaymentSystem {
 
             selectedCurrency = currency;
             Console.WriteLine($"Currency changed to {selectedCurrency}.");
+        }
+
+        private void ProcessCreditCardPayment() {
+            try {
+                Console.Write("Enter amount: ");
+                if (!decimal.TryParse(Console.ReadLine(), out decimal amount)) {
+                    Console.WriteLine("Error: Invalid amount format.");
+                    return;
+                }
+                Console.Write("Enter card number: ");
+                string cardNumber = Console.ReadLine()?.Trim();
+                Console.Write("Enter expiry date (MM/YY): ");
+                string expiryDate = Console.ReadLine()?.Trim();
+                Console.Write("Enter CVV: ");
+                string cvv = Console.ReadLine()?.Trim();
+
+                var payment = new CreditCardPayment(amount, selectedCurrency, "Stripe", cardNumber, expiryDate, cvv);
+                paymentManager.AddPayment(payment);
+                Console.WriteLine("Credit Card Payment added.");
+                payment.LogPayment(); 
+            } catch (Exception ex) {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        private void ProcessBitcoinPayment() {
+            try {
+                Console.Write("Enter amount: ");
+                if (!decimal.TryParse(Console.ReadLine(), out decimal amount)) {
+                    Console.WriteLine("Error: Invalid amount format.");
+                    return;
+                }
+                Console.Write("Enter wallet ID: ");
+                string walletId = Console.ReadLine()?.Trim();
+
+                var payment = new BitcoinPayment(amount, selectedCurrency, "Coinbase", walletId);
+                paymentManager.AddPayment(payment);
+                Console.WriteLine("Bitcoin Payment added.");
+                payment.LogPayment();
+            } catch (Exception ex) {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        private void ProcessCashPayment() {
+            try {
+                Console.Write("Enter amount: ");
+                if (!decimal.TryParse(Console.ReadLine(), out decimal amount)) {
+                    Console.WriteLine("Error: Invalid amount format.");
+                    return;
+                }
+
+                var payment = new CashPayment(amount, selectedCurrency);
+                paymentManager.AddPayment(payment);
+                Console.WriteLine("Cash Payment added.");
+                payment.LogPayment();
+            } catch (Exception ex) {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        private void ProcessChequePayment() {
+            try {
+                Console.Write("Enter amount: ");
+                if (!decimal.TryParse(Console.ReadLine(), out decimal amount)) {
+                    Console.WriteLine("Error: Invalid amount format.");
+                    return;
+                }
+                Console.Write("Enter cheque number: ");
+                string chequeNumber = Console.ReadLine()?.Trim();
+                Console.Write("Enter bank name: ");
+                string bankName = Console.ReadLine()?.Trim();
+
+                var payment = new ChequePayment(amount, selectedCurrency, chequeNumber, bankName);
+                paymentManager.AddPayment(payment);
+                Console.WriteLine("Cheque Payment added.");
+                payment.LogPayment();
+            } catch (Exception ex) {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
         }
 
         public string GetSelectedCurrency() {
