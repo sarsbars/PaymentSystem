@@ -4,7 +4,6 @@ namespace PaymentSystem {
     internal class Program {
         static void Main(string[] args) {
             Console.WriteLine("PaymentPlus Backend Demonstration\n");
-
             PaymentManager manager = new PaymentManager();
 
             try {
@@ -26,7 +25,7 @@ namespace PaymentSystem {
                 manager.AddPayment(new CashPayment(0.00m, "CAD")); // Invalid: <= 0
                 manager.AddPayment(new CashPayment(10.00m, "EUR")); // Invalid: EUR offline
 
-                // Cheque Payments
+                // Check Payments
                 manager.AddPayment(new ChequePayment(5.00m, "USD", "12345", "BankA")); // Valid
                 manager.AddPayment(new ChequePayment(5.50m, "USD", "12346", "BankB")); // Invalid: Non-whole USD
                 manager.AddPayment(new ChequePayment(10.00m, "CAD", "12347", "BankC")); // Valid

@@ -70,7 +70,6 @@ namespace PaymentSystem {
                 }
             }
         }
-
         private void ChangeCurrency() {
             Console.WriteLine("\nAvailable currencies: CAD, USD, EUR");
             Console.Write("Enter the currency you want to use: ");
@@ -112,7 +111,6 @@ namespace PaymentSystem {
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
-
         private void ProcessBitcoinPayment() {
             try {
                 Console.Write("Enter amount: ");
@@ -131,7 +129,6 @@ namespace PaymentSystem {
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
-
         private void ProcessCashPayment() {
             try {
                 Console.Write("Enter amount: ");
@@ -148,7 +145,6 @@ namespace PaymentSystem {
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
-
         private void ProcessChequePayment() {
             try {
                 Console.Write("Enter amount: ");
@@ -169,7 +165,6 @@ namespace PaymentSystem {
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
-
         public string GetSelectedCurrency() {
             return selectedCurrency;
         }
