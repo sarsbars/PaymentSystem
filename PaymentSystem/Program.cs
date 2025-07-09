@@ -40,7 +40,17 @@ namespace PaymentSystem {
             manager.RecordOffline();
             manager.ProcessPayments();
 
-            Console.WriteLine("\nDemonstration complete.");
+            Console.WriteLine("\nHardcoded Demonstration Complete.\n");
+
+            Console.WriteLine("Would you like to try the interactive UI? (y/n)");
+            string response = Console.ReadLine()?.Trim().ToLower();
+            if (response == "y") {
+                Console.WriteLine("\nStarting Interactive UI...\n");
+                UI ui = new UI();
+                ui.ProcessInput();
+            } else {
+                Console.WriteLine("\nExiting program.");
+            }
         }
     }
 }
